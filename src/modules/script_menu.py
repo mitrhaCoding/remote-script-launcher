@@ -1,5 +1,5 @@
 from runtime_state import runtime_state
-from modules import executor
+from modules import executor, view_script
 import os
 
 
@@ -45,7 +45,7 @@ def script_choice():
 
     elif choice == "2":
 
-        print(f"--- Not yet implemented ---")
+        view_script.view_script()
 
     elif choice == "3":
 
