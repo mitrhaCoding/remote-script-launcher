@@ -1,5 +1,6 @@
+from tkinter import Tk
 from runtime_state import runtime_state
-from modules import executor, view_script, load_scripts, delete_script
+from modules import executor, view_script, load_scripts, delete_script, script_analyzer
 import os
 from dataclasses import dataclass
 
@@ -19,72 +20,107 @@ backs = runtime_state.go_back
 
 def display_menu():
 
-    print(f"\n Selected target: {runtime_state.target}")
-    print(f"\n === Script Menu ===\n")
-    get_scripts()
-    print(f"\n [load] Load additional scripts")
-    print(f" [exit] Back to Main Menu")
+    while True:
 
-    choice = input("\n Select an option: ")
-
-    if choice == "exit":
-
-        return
-
-    elif choice == "load":
-
-        load_scripts.load_scripts()
+        print(f"\n === Script Menu ===\n")
+        print(f" Selected target: {runtime_state.target}\n")
         get_scripts()
+        print(f"\n [l] Load additional scripts")
+        print(f" [o] Open scripts folder")
+        print(f" [q] Back to Main Menu")
 
-    elif any(script for script in runtime_state.scripts if script["filename"].startswith(choice)):
+        choice = input("\n Select an option: ")
 
-        runtime_state.selected_script = next(script for script in runtime_state.scripts if script["filename"].startswith(choice))
-        print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
-        print(f"\n What to do with the selected script?\n")
-        script_choice()
+        if choice in backs:
 
-    elif choice in [str(script["index"]) for script in runtime_state.scripts]:
+            break
 
-        runtime_state.selected_script = next(script for script in runtime_state.scripts if str(script["index"]) == choice)
-        print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
-        print(f"\n What to do with the selected script?\n")
-        script_choice()
+        elif choice in ["load", "l"]:
+
+            load_scripts.load_scripts()
+            get_scripts()
+
+        elif choice in ["open", "o"]:
+
+            print(f"\n Opening scripts folder...")
+            # let's open it and bring it to the front
+            root = Tk()
+            root.withdraw()
+            root.wm_attributes('-topmost', 1)
+            os.startfile(runtime_state.scripts_path)
+            root.destroy()
+
+        elif any(script for script in runtime_state.scripts if script["filename"].startswith(choice)):
+
+            runtime_state.selected_script = next(script for script in runtime_state.scripts if script["filename"].startswith(choice))
+            print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
+            print(f"\n What to do with the selected script?\n")
+            script_choice()
+
+        elif choice in [str(script["index"]) for script in runtime_state.scripts]:
+
+            runtime_state.selected_script = next(script for script in runtime_state.scripts if str(script["index"]) == choice)
+            print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
+            print(f"\n What to do with the selected script?\n")
+            script_choice()
 
 
-    else:
+        else:
 
-        print(f"\n [!] Invalid option. Please select a valid option.")
+            print(f"\n [!] Invalid option. Please select a valid option.")
 
 
 
 def script_choice():
 
-    print(f" [1] Execute script")
-    print(f" [2] View script content")
-    print(f" [3] Delete script")
-    print(f" [0] Back to Script Menu")
+    script_info = script_analyzer.get_script_info(runtime_state.selected_script['filename'])
+    requires_args = script_info['requires_args']
+    
+    while True:
 
-    choice = input("\n Select an option: ")
+        print(f" [1] Execute script")
+        if requires_args:
+            print(f" [2] Execute script with arguments (recommended)")
+        else:
+            print(f" [2] Execute script with arguments")
+        print(f" [3] View script content")
+        print(f" [4] Delete script")
+        print(f" [q] Back to Script Menu")
 
-    if choice in executes:
+        choice = input("\n Select an option: ")
 
-        executor.execute_script()
+        if choice in executes:
 
-    elif choice in views:
+            if requires_args:
+                print(f"\n [!] Warning: This script appears to require arguments.")
+                confirm = input(" Execute without arguments anyway? (y/n): ")
+                if confirm.lower() not in ['y', 'yes']:
+                    continue
+            
+            executor.execute_script()
+            break
 
-        view_script.view_script()
+        elif choice in ["execute with arguments", "exec with arguments", "run with arguments", "start with arguments", "e with arguments", "2"]:
 
-    elif choice in deletes:
+            arguments = input("\n Enter arguments to pass to the script: ")
+            executor.execute_script_with_arguments(arguments)
+            break
 
-        delete_script.delete_script()
+        elif choice in views:
 
-    elif choice in backs:
+            view_script.view_script()
 
-        display_menu()
+        elif choice in deletes:
 
-    else:
+            delete_script.delete_script()
 
-        print(f"\n [!] Invalid option. Please select a valid option.")
+        elif choice in backs:
+
+            break
+
+        else:
+
+            print(f"\n [!] Invalid option. Please select a valid option.")
 
 
 
@@ -102,7 +138,10 @@ def get_scripts():
 
         if script.endswith(".bat") or script.endswith(".cmd") or script.endswith(".ps1"):
 
-            print(f" [{indexed_script['index']}] {indexed_script['filename']}")
+            script_info = script_analyzer.get_script_info(script)
+            arg_indicator = f" {script_info['arg_indicator']}" if script_info['arg_indicator'] else ""
+            
+            print(f" [{indexed_script['index']}] {indexed_script['filename']}{arg_indicator}")
             runtime_state.scripts.append(indexed_script)
 
 

@@ -11,8 +11,8 @@ class RuntimeState:
         self.scripts = []
         self.scripts_path = f"{os.getenv('LOCALAPPDATA')}\\RemoteScriptLauncher\\scripts"
         self.executes = ["execute", "exec", "run", "start", "e", "1"]
-        self.views = ["view", "content", "cat", "type", "v", "2"]
-        self.deletes = ["delete", "del", "remove", "rm", "d", "3"]
-        self.go_back = ["back", "b", "0", "exit", "e", "quit", "q"]
+        self.views = ["view", "content", "cat", "type", "v", "3"]
+        self.deletes = ["delete", "del", "remove", "rm", "d", "4"]
+        self.go_back = ["back", "b", "0", "exit", "quit", "q"]
 
 runtime_state = RuntimeState()

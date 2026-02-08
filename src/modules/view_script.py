@@ -8,4 +8,6 @@ def view_script():
     with open(current_script, 'r') as f:
         script_content = f.read()
 
+    print(f'\n=== Script Content ===\n')
     print(script_content)
+    print(f'\n======================\n')

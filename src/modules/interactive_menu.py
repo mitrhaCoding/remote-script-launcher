@@ -8,7 +8,7 @@ def __init__():
         print(f"\n === Remote Script Launcher ===")
         print(f"\n [1] Set Target")
         print(f" [2] Select Script")
-        print(f" [0] Exit")
+        print(f" [q] Exit")
 
         choice = input("\n Select an option: ")
 
