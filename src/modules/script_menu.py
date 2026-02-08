@@ -1,6 +1,19 @@
 from runtime_state import runtime_state
-from modules import executor, view_script
+from modules import executor, view_script, load_scripts, delete_script
 import os
+from dataclasses import dataclass
+
+@dataclass
+class FileIndex:
+    index : int
+    filename : str
+
+
+
+executes = runtime_state.executes
+views = runtime_state.views
+deletes = runtime_state.deletes
+backs = runtime_state.go_back
 
 
 
@@ -9,20 +22,34 @@ def display_menu():
     print(f"\n Selected target: {runtime_state.target}")
     print(f"\n === Script Menu ===\n")
     get_scripts()
-    print(f"\n [0] Back to Main Menu")
+    print(f"\n [load] Load additional scripts")
+    print(f" [exit] Back to Main Menu")
 
     choice = input("\n Select an option: ")
 
-    if choice == "0":
+    if choice == "exit":
 
         return
 
-    elif any(script for script in runtime_state.scripts if script.startswith(choice)):
+    elif choice == "load":
 
-        runtime_state.selected_script = next(script for script in runtime_state.scripts if script.startswith(choice))
-        print(f"\n [+] Selected script: {runtime_state.selected_script}")
+        load_scripts.load_scripts()
+        get_scripts()
+
+    elif any(script for script in runtime_state.scripts if script["filename"].startswith(choice)):
+
+        runtime_state.selected_script = next(script for script in runtime_state.scripts if script["filename"].startswith(choice))
+        print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
         print(f"\n What to do with the selected script?\n")
         script_choice()
+
+    elif choice in [str(script["index"]) for script in runtime_state.scripts]:
+
+        runtime_state.selected_script = next(script for script in runtime_state.scripts if str(script["index"]) == choice)
+        print(f"\n [+] Selected script: {runtime_state.selected_script['filename']}")
+        print(f"\n What to do with the selected script?\n")
+        script_choice()
+
 
     else:
 
@@ -39,19 +66,19 @@ def script_choice():
 
     choice = input("\n Select an option: ")
 
-    if choice == "1":
+    if choice in executes:
 
         executor.execute_script()
 
-    elif choice == "2":
+    elif choice in views:
 
         view_script.view_script()
 
-    elif choice == "3":
+    elif choice in deletes:
 
-        print(f"--- Not yet implemented ---")
+        delete_script.delete_script()
 
-    elif choice == "0":
+    elif choice in backs:
 
         display_menu()
 
@@ -63,14 +90,22 @@ def script_choice():
 
 def get_scripts():
 
-    for script in os.listdir(runtime_state.scripts_path):
+    if not os.listdir(runtime_state.scripts_path):
 
-        if script.endswith(".ps1"):
+        print(f" [!] No scripts found.")
+        return
 
-            print(f" [*] {script}")
-            runtime_state.scripts.append(script)
+    for index, script in enumerate(os.listdir(runtime_state.scripts_path)):
 
-        elif script.endswith(".bat" or ".cmd"):
+        indexed_script = {"filename": script, "index": index + 1}
+        indexed_script["filename", "index"] = assign_file_index(script, index + 1)
 
-            print(f" [*] {script}")
-            runtime_state.scripts.append(script)
+        if script.endswith(".bat") or script.endswith(".cmd") or script.endswith(".ps1"):
+
+            print(f" [{indexed_script['index']}] {indexed_script['filename']}")
+            runtime_state.scripts.append(indexed_script)
+
+
+
+def assign_file_index(input, index) -> FileIndex:
+    return FileIndex(index=index, filename=input)

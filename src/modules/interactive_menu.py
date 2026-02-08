@@ -6,7 +6,7 @@ def __init__():
     while True:
 
         print(f"\n === Remote Script Launcher ===")
-        print(f" [1] Set Target")
+        print(f"\n [1] Set Target")
         print(f" [2] Select Script")
         print(f" [0] Exit")
 
@@ -25,7 +25,7 @@ def __init__():
 
             script_menu.display_menu()
 
-        elif choice == "0":
+        elif choice in runtime_state.go_back:
 
             print("\n[!] Exiting...")
             break

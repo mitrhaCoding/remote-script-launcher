@@ -6,16 +6,16 @@ def execute_script():
     script = runtime_state.selected_script
     target = runtime_state.target
 
-    copy_command = f"copy {runtime_state.scripts_path}\\{script} \\\\{target}\\C$\\Windows\\System32"
-    delete_command = f"del \\\\{target}\\C$\\Windows\\System32\\{script}"
+    copy_command = f"copy {runtime_state.scripts_path}\\{script['filename']} \\\\{target}\\C$\\Windows\\System32"
+    delete_command = f"del \\\\{target}\\C$\\Windows\\System32\\{script['filename']}"
     
-    if script.endswith(".bat" or ".cmd"):
+    if script["filename"].endswith(".bat") or script["filename"].endswith(".cmd"):
 
-        execute_command = f"psexec -nobanner \\\\{target} {script}"
+        execute_command = f"psexec -nobanner \\\\{target} {script['filename']}"
 
-    elif script.endswith(".ps1"):
+    elif script["filename"].endswith(".ps1"):
 
-        execute_command = f"psexec -nobanner \\\\{target} PowerShell -Command Set-ExecutionPolicy Bypass && {script}"
+        execute_command = f"psexec -nobanner \\\\{target} PowerShell -ExecutionPolicy Bypass -File .\\{script['filename']}"
 
 
 
