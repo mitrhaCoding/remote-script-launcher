@@ -4,7 +4,6 @@ import sys
 
 PS_EXEC_DOWNLOAD = "https://learn.microsoft.com/en-us/sysinternals/downloads/psexec"
 SYSINTERNALS_SUITE = "https://learn.microsoft.com/en-us/sysinternals/downloads/sysinternals-suite"
-PYTHON_DOWNLOAD = "https://www.python.org/downloads/"
 
 
 def find_psexec() -> str | None:
@@ -40,32 +39,3 @@ def check_psexec(raise_on_missing: bool = False) -> bool:
     else:
         print("PsExec is a Windows utility; skipping check on non-Windows platform.")
         return False
-
-
-def find_python() -> str | None:
-    """
-    Return the full path to a Python interpreter if found in PATH, otherwise None.
-    """
-    for name in ("python", "python3"):
-        path = shutil.which(name)
-        if path:
-            return path
-    return None
-
-
-def check_python(raise_on_missing: bool = False) -> bool:
-    """
-    Check for a Python interpreter on PATH. If missing, print download link.
-    Returns True if found, False otherwise. If raise_on_missing is True, raises SystemExit(1).
-    """
-    path = find_python()
-    if path:
-        return True
-    msg = (
-        "Python interpreter was not found in PATH.\n"
-        f"Download Python: {PYTHON_DOWNLOAD}"
-    )
-    print(msg)
-    if raise_on_missing:
-        raise SystemExit(1)
-    return False

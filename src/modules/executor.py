@@ -1,21 +1,24 @@
 from runtime_state import runtime_state
-import subprocess
+import subprocess, os
+
+if not os.path.exists(f"\\\\{runtime_state.target}\\C$\\temp"):
+    os.makedirs(f"\\\\{runtime_state.target}\\C$\\temp")
 
 def execute_script():
 
     script = runtime_state.selected_script
     target = runtime_state.target
 
-    copy_command = f"copy {runtime_state.scripts_path}\\{script['filename']} \\\\{target}\\C$\\Windows\\System32"
-    delete_command = f"del \\\\{target}\\C$\\Windows\\System32\\{script['filename']}"
+    copy_command = f"copy {runtime_state.scripts_path}\\{script['filename']} \\\\{target}\\C$\\temp"
+    delete_command = f"del \\\\{target}\\C$\\temp\\{script['filename']}"
     
     if script["filename"].endswith(".bat") or script["filename"].endswith(".cmd"):
 
-        execute_command = f"psexec -nobanner \\\\{target} cmd /c .\\{script['filename']}"
+        execute_command = f"psexec -nobanner \\\\{target} cmd /c C:\\temp\\{script['filename']}"
 
     elif script["filename"].endswith(".ps1"):
 
-        execute_command = f"psexec -nobanner \\\\{target} PowerShell -ExecutionPolicy Bypass -File .\\{script['filename']}"
+        execute_command = f"psexec -nobanner \\\\{target} PowerShell -ExecutionPolicy Bypass -File C:\\temp\\{script['filename']}"
 
 
 
@@ -42,18 +45,15 @@ def execute_script_with_arguments(arguments):
     script = runtime_state.selected_script
     target = runtime_state.target
 
-    copy_command = f"copy {runtime_state.scripts_path}\\{script['filename']} \\\\{target}\\C$\\Windows\\System32"
-    delete_command = f"del \\\\{target}\\C$\\Windows\\System32\\{script['filename']}"
+    copy_command = f"copy {runtime_state.scripts_path}\\{script['filename']} \\\\{target}\\C$\\temp"
+    delete_command = f"del \\\\{target}\\C$\\temp\\{script['filename']}"
     
     if script["filename"].endswith(".bat") or script["filename"].endswith(".cmd"):
 
-        execute_command = f"psexec -nobanner \\\\{target} cmd /c .\\{script['filename']} {arguments}"
-
+        execute_command = f"psexec -nobanner \\\\{target} cmd /c C:\\temp\\{script['filename']} {arguments}"
     elif script["filename"].endswith(".ps1"):
 
-        execute_command = f"psexec -nobanner \\\\{target} PowerShell -ExecutionPolicy Bypass -File .\\{script['filename']} {arguments}"
-
-
+        execute_command = f"psexec -nobanner \\\\{target} PowerShell -ExecutionPolicy Bypass -File C:\\temp\\{script['filename']} {arguments}"
 
     try:
             

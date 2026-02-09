@@ -6,7 +6,6 @@ if __name__ == "__main__":
     try:
 
         dependencies_check.check_psexec(raise_on_missing=True)
-        dependencies_check.check_python(raise_on_missing=True)
 
         interactive_menu.__init__()
 
