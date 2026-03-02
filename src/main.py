@@ -1,5 +1,6 @@
 import sys
 from modules import interactive_menu, dependencies_check
+from gui.main_gui import initiate
 
 if __name__ == "__main__":
 
@@ -7,7 +8,8 @@ if __name__ == "__main__":
 
         dependencies_check.check_psexec(raise_on_missing=True)
 
-        interactive_menu.__init__()
+        # interactive_menu.__init__() # CLI
+        initiate()
 
     except KeyboardInterrupt:
 
