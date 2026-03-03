@@ -1,4 +1,5 @@
 import customtkinter as ctk
+from modules import script_menu
 
 class ScriptFrame(ctk.CTkScrollableFrame):
     def __init__(self, master, **kwargs):
