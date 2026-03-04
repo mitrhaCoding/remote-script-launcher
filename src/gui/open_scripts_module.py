@@ -1,13 +1,13 @@
 import customtkinter as ctk
 from tkinter import Tk
-import runtime_state
+from runtime_state import runtime_state
 import os
 
 # https://customtkinter.tomschimansky.com/documentation/windows/toplevel
 class ScriptsFolder(ctk.CTkToplevel):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.geometry("400x600")
+        self.geometry("800x600")
         self.title = "Here are the scripts."
         
         root = Tk()
