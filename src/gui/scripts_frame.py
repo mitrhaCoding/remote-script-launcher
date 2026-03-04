@@ -13,18 +13,34 @@ class ScriptObject(ctk.CTkFrame):
         self.on_view = on_view
         self.on_launch = on_launch
 
+        # https://customtkinter.tomschimansky.com/documentation/widgets/label
         self.label = ctk.CTkLabel(self,text=script["filename"])
         self.label.grid(row=0,column=0,pady=0,padx=0,sticky="w")
         self.grid_columnconfigure(0, weight=1)
 
         # https://customtkinter.tomschimansky.com/documentation/widgets/button
-        self.delete_button = ctk.CTkButton(self,text="Delete",command=self._delete_command,width=0)
+        self.delete_button = ctk.CTkButton(
+            self,
+            text="Delete",
+            command=self._delete_command,
+            width=0
+        )
         self.delete_button.grid(row=0,column=3,pady=0,padx=5)
 
-        self.view_button = ctk.CTkButton(self,text="View",command=self._view_command,width=0)
+        self.view_button = ctk.CTkButton(
+            self,
+            text="View",
+            command=self._view_command,
+            width=0
+        )
         self.view_button.grid(row=0,column=2,pady=0,padx=5)
     
-        self.launch_button = ctk.CTkButton(self,text="Launch",command=self._launch_command,width=0)
+        self.launch_button = ctk.CTkButton(
+            self,
+            text="Launch",
+            command=self._launch_command,
+            width=0
+        )
         self.launch_button.grid(row=0,column=1,pady=0,padx=5)
 
     def _delete_command(self):
@@ -53,7 +69,13 @@ class ScriptFrame(ctk.CTkScrollableFrame):
             if isinstance(script, str):
                 script = {"filename": script, "index": row}
 
-            script_box = ScriptObject(self, script=script, on_delete=self.handle_delete, on_view=self.handle_view, on_launch=self.handle_launch)
+            script_box = ScriptObject(
+                self,
+                script=script,
+                on_delete=self.handle_delete,
+                on_view=self.handle_view,
+                on_launch=self.handle_launch
+            )
             script_box.grid(row=row+1,column=0,padx=5,pady=5,sticky="ew")
             #print(f"Found script as dict: {script}")
             #self.script_o = ScriptObject(script=script)
@@ -61,10 +83,10 @@ class ScriptFrame(ctk.CTkScrollableFrame):
         self.grid_columnconfigure(0, weight=1)
 
     def handle_delete(self,script):
-        print(f"Delete request for {script["filename"]}")
+        print(f"Issued delete request for {script["filename"]}")
     
     def handle_view(self,script):
-        print(f"View request for {script["filename"]}")
+        print(f"Issued view request for {script["filename"]}")
     
     def handle_launch(self,script):
-        print(f"Launch request for {script["filename"]}")
+        print(f"Issued launch request for {script["filename"]}")
