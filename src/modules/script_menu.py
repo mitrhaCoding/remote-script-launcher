@@ -4,11 +4,6 @@ from modules import executor, view_script, load_scripts, delete_script, script_a
 import os
 from dataclasses import dataclass
 
-@dataclass
-class FileIndex:
-    index : int
-    filename : str
-
 
 
 executes = runtime_state.executes
@@ -24,7 +19,7 @@ def display_menu():
 
         print(f"\n === Script Menu ===\n")
         print(f" Selected target: {runtime_state.target}\n")
-        get_scripts()
+        get_scripts(print_items=True)
         print(f"\n [l] Load additional scripts")
         print(f" [o] Open scripts folder")
         print(f" [q] Back to Main Menu")
@@ -38,7 +33,7 @@ def display_menu():
         elif choice in ["load", "l"]:
 
             load_scripts.load_scripts()
-            get_scripts()
+            get_scripts(print_items=True)
 
         elif choice in ["open", "o"]:
 
@@ -124,27 +119,22 @@ def script_choice():
 
 
 
-def get_scripts():
+def get_scripts(print_items=True):
 
     if not os.listdir(runtime_state.scripts_path):
-
-        print(f" [!] No scripts found.")
+        if print_items:
+            print(f" [!] No scripts found.")
         return
 
     for index, script in enumerate(os.listdir(runtime_state.scripts_path)):
 
         indexed_script = {"filename": script, "index": index + 1}
-        indexed_script["filename", "index"] = assign_file_index(script, index + 1)
 
         if script.endswith(".bat") or script.endswith(".cmd") or script.endswith(".ps1"):
 
             script_info = script_analyzer.get_script_info(script)
             arg_indicator = f" {script_info['arg_indicator']}" if script_info['arg_indicator'] else ""
             
-            print(f" [{indexed_script['index']}] {indexed_script['filename']}{arg_indicator}")
+            if print_items:
+                print(f" [{indexed_script['index']}] {indexed_script['filename']}{arg_indicator}")
             runtime_state.scripts.append(indexed_script)
-
-
-
-def assign_file_index(input, index) -> FileIndex:
-    return FileIndex(index=index, filename=input)

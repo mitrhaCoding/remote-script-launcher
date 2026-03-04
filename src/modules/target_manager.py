@@ -7,11 +7,11 @@ def set_target(value):
 
     if validate_target(value):
 
-        print(f"\n [+] Target set to: {value}")
+        print(f"[+] Target set to: {value}")
         runtime_state.target = value
         return True
     
-    print(f"\n [!] Failed to set target.")
+    print(f"[!] Failed to set target.")
     return False
 
 
@@ -25,5 +25,5 @@ def validate_target(input):
     
     except ValueError:
 
-        print(f"\n [!] Invalid IP address. Please enter a valid IP address.")
+        print(f"[!] Invalid IP address. Please enter a valid IP address.")
         return None
