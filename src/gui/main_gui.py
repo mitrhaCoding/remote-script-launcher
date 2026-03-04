@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from modules import target_manager
-from gui import scripts_frame
+from gui import open_scripts_module, scripts_frame
 
 # https://customtkinter.tomschimansky.com/documentation/windows/window
 class App(ctk.CTk):
@@ -17,10 +17,16 @@ class App(ctk.CTk):
 
         self.script_frame = scripts_frame.ScriptFrame(master=self, height=200)
         self.script_frame.grid(row=1, column=0, pady=(10,0), padx=20, sticky="ew")
+        
+        self.open_scripts_folder = ctk.CTkButton(self, 0, text="Open scripts folder", command=self.open_folder)
+        self.open_scripts_folder.grid(row=2,column=0,pady=(10,0),padx=20,sticky="ew")
 
     def on_key_pressed(self, event=None):
         value = self.enter.get()
         target_manager.set_target(value)
+    
+    def open_folder(self):
+        open_scripts_module.ScriptsFolder()
 
 app = App()
 
