@@ -5,12 +5,11 @@ from modules.script_menu import get_scripts
 # https://customtkinter.tomschimansky.com/documentation/widgets/frame
 # https://customtkinter.tomschimansky.com/tutorial/spinbox
 class ScriptObject(ctk.CTkFrame):
-    def __init__(self, master, script, on_delete=None, on_view=None, on_launch=None):
+    def __init__(self, master, script, on_delete=None, on_launch=None):
         super().__init__(master)
 
         self.script = script
         self.on_delete = on_delete
-        self.on_view = on_view
         self.on_launch = on_launch
 
         # https://customtkinter.tomschimansky.com/documentation/widgets/label
@@ -25,15 +24,7 @@ class ScriptObject(ctk.CTkFrame):
             command=self._delete_command,
             width=0
         )
-        self.delete_button.grid(row=0,column=3,pady=0,padx=5)
-
-        self.view_button = ctk.CTkButton(
-            self,
-            text="View",
-            command=self._view_command,
-            width=0
-        )
-        self.view_button.grid(row=0,column=2,pady=0,padx=5)
+        self.delete_button.grid(row=0,column=2,pady=0,padx=5)
     
         self.launch_button = ctk.CTkButton(
             self,
@@ -46,10 +37,6 @@ class ScriptObject(ctk.CTkFrame):
     def _delete_command(self):
         if callable(self.on_delete):
             self.on_delete(self.script)
-    
-    def _view_command(self):
-        if callable(self.on_view):
-            self.on_view(self.script)
 
     def _launch_command(self):
         if callable(self.on_launch):
@@ -73,7 +60,6 @@ class ScriptFrame(ctk.CTkScrollableFrame):
                 self,
                 script=script,
                 on_delete=self.handle_delete,
-                on_view=self.handle_view,
                 on_launch=self.handle_launch
             )
             script_box.grid(row=row+1,column=0,padx=5,pady=5,sticky="ew")
@@ -84,9 +70,6 @@ class ScriptFrame(ctk.CTkScrollableFrame):
 
     def handle_delete(self,script):
         print(f"Issued delete request for {script["filename"]}")
-    
-    def handle_view(self,script):
-        print(f"Issued view request for {script["filename"]}")
     
     def handle_launch(self,script):
         print(f"Issued launch request for {script["filename"]}")
